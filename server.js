@@ -89,7 +89,7 @@ app.use(express.json());  //^pass incoming json data
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());  //^ to pass the cookie automatically
 const corsOptions = {
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
 }
 app.use(cors(corsOptions));
