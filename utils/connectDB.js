@@ -3,9 +3,11 @@ const mongoose = require("mongoose");
 // Cb1ITFsk9lDb9EDF
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(
-      "mongodb+srv://sanjeevsinghverma91_db_user:Cb1ITFsk9lDb9EDF@genio-ai.yqq1shm.mongodb.net/genio-ai?retryWrites=true&w=majority&appName=Genio-ai"
-    );
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 30000,
+      tls: true,
+      family: 4,
+    });
     console.log(`Mongodb connected ${conn.connection.host}`);
   } catch (error) {
     console.error(`Error connecting to MongoDB ${error.message}`);
