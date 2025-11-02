@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-// sanjeevsinghverma91_db_user
-// Cb1ITFsk9lDb9EDF
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
