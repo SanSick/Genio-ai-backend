@@ -2,7 +2,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const cron = require("node-cron");
 const cors = require("cors");
-require("dotenv").config();
+// require("dotenv").config();
 const User = require("./models/User");
 const usersRouter = require("./routes/usersRouter");
 const openAIRouter = require("./routes/openAIRouter");
