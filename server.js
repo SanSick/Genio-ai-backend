@@ -10,6 +10,7 @@ const { errorHandler } = require("./middlewares/errorMiddleware");
 const stripeRouter = require("./routes/stripeRouter");
 require("./utils/connectDB")();
 
+
 const app = express();
 const PORT = process.env.PORT || 8090;
 
@@ -32,7 +33,7 @@ cron.schedule("0 0 * * * *", async () => {
         console.log(error);
     }
 });
-  
+
 //Corn for the Free Plan : run at the end of every month
 cron.schedule("0 0 1 * * *", async () => {
     // console.log("Running trial check every sec...");
@@ -85,14 +86,15 @@ cron.schedule("0 0 1 * * *", async () => {
 });
 
 //-----middlewares-----//
-app.use(express.json());  //^pass incoming json data
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());  //^ to pass the cookie automatically
 const corsOptions = {
     origin: [process.env.FRONTEND_URL, "http://localhost:5173" ],
     credentials: true,
 }
 app.use(cors(corsOptions));
+app.use(express.json());  //^pass incoming json data
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());  //^ to pass the cookie automatically
+
 
 
 //-------- Routes -------//
