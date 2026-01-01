@@ -1,8 +1,8 @@
-const asyncHandler = require("express-async-handler");
-const { calculateNextBillingDate } = require("../utils/calculateNextBillingDate");
-const { shouldRenewSubscriptionPlan } = require("../utils/shouldRenewsubscriptionPlan");
-const Payment = require("../models/Payment");
-const User = require("../models/User");
+import asyncHandler from "express-async-handler";
+import { calculateNextBillingDate } from "../utils/calculateNextBillingDate";
+import { shouldRenewSubscriptionPlan } from "../utils/shouldRenewsubscriptionPlan";
+import { create } from "../models/Payment";
+import { findById, findByIdAndUpdate } from "../models/User";
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 //*-------- Stripe payment -------*//
@@ -49,7 +49,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
       const userId = metadata?.userId;
 
       //Find the user
-      const userFound = await User.findById(userId);
+      const userFound = await findById(userId);
       if (!userFound) {
         return res.status(404).json({
           status: "false",
@@ -62,7 +62,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
       const paymentId = paymentIntent?.id;
 
       //create the payment history
-      const newPayment = await Payment.create({
+      const newPayment = await create({
         user: userId,
         email: userEmail,
         subscriptionPlan,
@@ -75,7 +75,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
       //Check for the subscription plan
       if (subscriptionPlan === "Basic") {
         //update the user
-        const updatedUser = await User.findByIdAndUpdate(userId, {
+        const updatedUser = await findByIdAndUpdate(userId, {
           subscriptionPlan,
           trialPeriod: 0,
           nextBillingDate: calculateNextBillingDate(),
@@ -94,7 +94,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
 
       if (subscriptionPlan === "Premium") {
         //update the user
-        const updatedUser = await User.findByIdAndUpdate(userId, {
+        const updatedUser = await findByIdAndUpdate(userId, {
           subscriptionPlan,
           trialPeriod: 0,
           nextBillingDate: calculateNextBillingDate(),
@@ -134,7 +134,7 @@ const handleFreeSubscription = asyncHandler(async (req, res) => {
       user.nextBillingDate = calculateNextBillingDate();;
 
       //Create new payment and save into DB
-      const newPayment = await Payment.create({
+      const newPayment = await create({
         user: user?._id,
         subscriptionPlan: "Free",
         amount: 0,
@@ -164,4 +164,4 @@ const handleFreeSubscription = asyncHandler(async (req, res) => {
 
 
 
-module.exports = { handlestripePayment, handleFreeSubscription, verifyPayment };
+export default { handlestripePayment, handleFreeSubscription, verifyPayment };

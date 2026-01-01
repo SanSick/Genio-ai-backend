@@ -1,13 +1,13 @@
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const cron = require("node-cron");
-const cors = require("cors");
+import express, { json, urlencoded } from "express";
+import cookieParser from "cookie-parser";
+import { schedule } from "node-cron";
+import cors from "cors";
 // require("dotenv").config();
-const User = require("./models/User");
-const usersRouter = require("./routes/usersRouter");
-const openAIRouter = require("./routes/openAIRouter");
-const { errorHandler } = require("./middlewares/errorMiddleware");
-const stripeRouter = require("./routes/stripeRouter");
+import { User } from "./models/User.js";
+import usersRouter from "./routes/usersRouter";
+import openAIRouter from "./routes/openAIRouter";
+import { errorHandler } from "./middlewares/errorMiddleware";
+import stripeRouter from "./routes/stripeRouter";
 require("./utils/connectDB")();
 
 
@@ -15,7 +15,7 @@ const app = express();
 const PORT = process.env.PORT || 8090;
 
 //Corn for the trail period : run every single day
-cron.schedule("0 0 * * * *", async () => {
+schedule("0 0 * * * *", async () => {
     // console.log("Running trial check every sec...");
     try {
         //get the current date
@@ -35,7 +35,7 @@ cron.schedule("0 0 * * * *", async () => {
 });
 
 //Corn for the Free Plan : run at the end of every month
-cron.schedule("0 0 1 * * *", async () => {
+schedule("0 0 1 * * *", async () => {
     // console.log("Running trial check every sec...");
     try {
         //get the current date
@@ -52,7 +52,7 @@ cron.schedule("0 0 1 * * *", async () => {
 });
 
 //Corn for the Basic Plan : run at the end of every month
-cron.schedule("0 0 1 * * *", async () => {
+schedule("0 0 1 * * *", async () => {
     // console.log("Running trial check every sec...");
     try {
         //get the current date
@@ -69,7 +69,7 @@ cron.schedule("0 0 1 * * *", async () => {
 });
 
 //Corn for the Premiun Plan : run at the end of every month
-cron.schedule("0 0 1 * * *", async () => {
+schedule("0 0 1 * * *", async () => {
     // console.log("Running trial check every sec...");
     try {
         //get the current date
@@ -91,8 +91,8 @@ const corsOptions = {
     credentials: true,
 }
 app.use(cors(corsOptions));
-app.use(express.json());  //^pass incoming json data
-app.use(express.urlencoded({ extended: true }));
+app.use(json());  //^pass incoming json data
+app.use(urlencoded({ extended: true }));
 app.use(cookieParser());  //^ to pass the cookie automatically
 
 

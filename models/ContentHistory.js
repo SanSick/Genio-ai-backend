@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const historySchema = new mongoose.Schema(
+const historySchema = new Schema(
   {
     user: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
     },
     content: {
@@ -18,5 +18,5 @@ const historySchema = new mongoose.Schema(
 
 
 //! Compile to form the model
-const ContentHistory = mongoose.model("ContentHistory", historySchema);
-module.exports = ContentHistory;
+const ContentHistory = model("ContentHistory", historySchema);
+export default ContentHistory;

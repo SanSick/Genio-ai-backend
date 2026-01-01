@@ -1,5 +1,5 @@
-const asyncHandler = require("express-async-handler");
-const User = require("../models/User");
+import asyncHandler from "express-async-handler";
+import { findById } from "../models/User";
 
 const checkApiRequestLimit = asyncHandler(async (req, res, next) => {
     //console.log(req.user);
@@ -7,7 +7,7 @@ const checkApiRequestLimit = asyncHandler(async (req, res, next) => {
         return res.status(401).json({message: "Not authorized"})
     }
     //* Find the user
-    const user = await User.findById(req?.user?._id);
+    const user = await findById(req?.user?._id);
     if (!user) {
         return res.status(404).json({message: "User not found"})
     }
@@ -25,4 +25,4 @@ const checkApiRequestLimit = asyncHandler(async (req, res, next) => {
     next();
 });
 
-module.exports = { checkApiRequestLimit };
+export default { checkApiRequestLimit };

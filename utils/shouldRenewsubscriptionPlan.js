@@ -3,4 +3,4 @@ const shouldRenewSubscriptionPlan = (user) => {
     return !user?.nextBillingDate || user?.nextBillingDate <= today
 };
 
-module.exports = {shouldRenewSubscriptionPlan}
+export default {shouldRenewSubscriptionPlan}

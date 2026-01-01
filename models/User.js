@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema(
   {
     username: {
       type: String,
@@ -41,13 +41,13 @@ const userSchema = new mongoose.Schema(
     nextBillingDate: Date,
     payments: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Payment",
       },
     ],
     contentHistory: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "ContentHistory",
       },
     ],
@@ -66,5 +66,5 @@ const userSchema = new mongoose.Schema(
 
 
 //! Compile to form the model
-const User = mongoose.model("User", userSchema);
-module.exports = User;
+const User = model("User", userSchema);
+export default User;

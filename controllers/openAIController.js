@@ -1,14 +1,14 @@
-const asyncHandler = require("express-async-handler");
-const axios = require("axios");
-const ContentHistory = require("../models/ContentHistory");
-const User = require("../models/User");
+import asyncHandler from "express-async-handler";
+import { post } from "axios";
+import { create } from "../models/ContentHistory";
+import { findById } from "../models/User";
 
 //--- OpenAI Controller -------
 const openAIController = asyncHandler(async (req, res) => {
   // console.log(req.user);
   const { prompt } = req.body;
   try {
-    const response = await axios.post(
+    const response = await post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
         model: "qwen/qwen3-4b:free", 
@@ -30,12 +30,12 @@ const openAIController = asyncHandler(async (req, res) => {
     const content = response?.data?.choices[0].message.content //!If your app expects code, markdown, or structured output, skip .trim() so you don’t cut off formatting.
     // const content = response?.data?.choices[0].message.content.trim(); //! If your app is a chatbot or simple text responder, use .trim()
     //& Create the history
-    const newContent = await ContentHistory.create({
+    const newContent = await create({
       user: req.user._id,
       content,
     });
     //*Push the content history into the user 
-    const userFound = await User.findById(req?.user?._id);
+    const userFound = await findById(req?.user?._id);
     userFound.contentHistory.push(newContent?._id);
     //*update the API Request Count
     userFound.apiRequestCount += 1;
@@ -48,4 +48,4 @@ const openAIController = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { openAIController };
+export default { openAIController };

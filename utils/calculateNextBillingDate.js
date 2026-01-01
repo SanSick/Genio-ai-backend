@@ -4,4 +4,4 @@ const calculateNextBillingDate = () => {
     return oneMonthFromNow;
 }
 
-module.exports = {calculateNextBillingDate};
+export default {calculateNextBillingDate};
