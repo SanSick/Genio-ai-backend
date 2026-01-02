@@ -18,17 +18,28 @@
 
 // module.exports = usersRouter;
 
-
 import { Router } from "express";
-import { register, login, logout, userProfile, checkAuth } from "../controllers/usersController";
-import { isAuthenticated } from "../middlewares/isAuthenticated";
+import {
+  register,
+  login,
+  logout,
+  userProfile,
+  checkAuth,
+} from "../controllers/usersController.js";
+
+import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 
 const usersRouter = Router();
 
+// Auth
 usersRouter.post("/register", register);
 usersRouter.post("/login", login);
-usersRouter.post("/logout", logout);
+usersRouter.post("/logout", isAuthenticated, logout);
+
+// Profile
 usersRouter.get("/profile", isAuthenticated, userProfile);
-usersRouter.get("/auth/check", isAuthenticated, checkAuth);
+
+// Auth status check (no middleware)
+usersRouter.get("/auth/check", checkAuth);
 
 export default usersRouter;

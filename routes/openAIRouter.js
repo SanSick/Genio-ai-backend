@@ -15,11 +15,12 @@
 
 // module.exports = openAIRouter;
 
+
 import { Router } from "express";
 
-import { isAuthenticated } from "../middlewares/isAuthenticated";
-import { openAIController } from "../controllers/openAIController";
-import { checkApiRequestLimit } from "../middlewares/checkApiRequestLimit";
+import { isAuthenticated } from "../middlewares/isAuthenticated.js";
+import { openAIController } from "../controllers/openAIController.js";
+import { checkApiRequestLimit } from "../middlewares/checkApiRequestLimit.js";
 
 const openAIRouter = Router();
 
@@ -31,3 +32,4 @@ openAIRouter.post(
 );
 
 export default openAIRouter;
+

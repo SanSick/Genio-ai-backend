@@ -13,10 +13,15 @@
 // stripeRouter.post("/verify-payment/:paymentId", isAuthenticated, verifyPayment);
 
 // module.exports = stripeRouter;
-import { Router } from "express";
 
-import { isAuthenticated } from "../middlewares/isAuthenticated";
-import { handlestripePayment, handleFreeSubscription, verifyPayment } from "../controllers/handleStripePayment";
+
+import { Router } from "express";
+import { isAuthenticated } from "../middlewares/isAuthenticated.js";
+import {
+  handlestripePayment,
+  handleFreeSubscription,
+  verifyPayment,
+} from "../controllers/handleStripePayment.js";
 
 const stripeRouter = Router();
 
