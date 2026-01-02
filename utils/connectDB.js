@@ -15,14 +15,15 @@
 
 // module.exports = connectDB;
 
-import { connection, connect } from "mongoose";
+import mongoose from "mongoose";
+const { connect, connection } = mongoose;
 const connectDB = async () => {
   if (connection.readyState >= 1) {
     return;
   }
   try {
     const conn = await connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 30000,
+      // serverSelectionTimeoutMS: 30000,
       serverSelectionTimeoutMS: 5000,
       tls: true,
       family: 4,
@@ -34,3 +35,5 @@ const connectDB = async () => {
     throw error;
   }
 };
+
+export default connectDB;
