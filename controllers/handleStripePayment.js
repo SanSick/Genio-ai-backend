@@ -1,12 +1,15 @@
 import asyncHandler from "express-async-handler";
-import { calculateNextBillingDate } from "../utils/calculateNextBillingDate";
-import { shouldRenewSubscriptionPlan } from "../utils/shouldRenewsubscriptionPlan";
-import { create } from "../models/Payment";
-import { findById, findByIdAndUpdate } from "../models/User";
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+import Stripe from "stripe";
+import Payment from "../models/Payment.js";
+import User from "../models/User.js";
+import { calculateNextBillingDate } from "../utils/calculateNextBillingDate.js";
+import { shouldRenewSubscriptionPlan } from "../utils/shouldRenewsubscriptionPlan.js";
+
+// const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 //*-------- Stripe payment -------*//
-const handlestripePayment = asyncHandler(async (req, res) => {
+export const handlestripePayment = asyncHandler(async (req, res) => {
   //   console.log("Request body:", req.body);
   const { amount, subscriptionPlan } = req.body;
   //get the user
@@ -37,11 +40,14 @@ const handlestripePayment = asyncHandler(async (req, res) => {
   }
 });
 //*--------- Verify Payment -------*//
-const verifyPayment = asyncHandler(async (req, res) => {
+export const verifyPayment = asyncHandler(async (req, res) => {
   const {paymentId} = req.params;
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentId)
     // console.log(paymentIntent);
+    if (paymentIntent.status !== "succeeded") {
+      return res.status(400).json({ message: "Payment not successful" });
+    }
     if (paymentIntent.status === 'succeeded') {
       const metadata = paymentIntent?.metadata;
       const subscriptionPlan = metadata?.subscriptionPlan;
@@ -119,7 +125,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
 });
 
 //*-------- Handle Free subscription -------*//
-const handleFreeSubscription = asyncHandler(async (req, res) => {
+export const handleFreeSubscription = asyncHandler(async (req, res) => {
   //Get the login user
   const user = req?.user;
   // console.log(user);
@@ -134,7 +140,7 @@ const handleFreeSubscription = asyncHandler(async (req, res) => {
       user.nextBillingDate = calculateNextBillingDate();;
 
       //Create new payment and save into DB
-      const newPayment = await create({
+      const newPayment = await Payment.create({
         user: user?._id,
         subscriptionPlan: "Free",
         amount: 0,
@@ -164,4 +170,5 @@ const handleFreeSubscription = asyncHandler(async (req, res) => {
 
 
 
-export default { handlestripePayment, handleFreeSubscription, verifyPayment };
+
+
