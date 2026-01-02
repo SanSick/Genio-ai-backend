@@ -74,12 +74,20 @@ export const login = asyncHandler(async (req, res) => {
   );
 
   // Set cookie
+  // res.cookie("token", token, {
+  //   httpOnly: true,
+  //   secure: process.env.NODE_ENV === "production" ? true : false,
+  //   sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+  //   maxAge: 3 * 24 * 60 * 60 * 1000,
+  // });
+
   res.cookie("token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production" ? true : false,
-    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+    secure: true,
+    sameSite: "None",
     maxAge: 3 * 24 * 60 * 60 * 1000,
   });
+  
   
 
   res.status(200).json({
