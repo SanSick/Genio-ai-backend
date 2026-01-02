@@ -4,7 +4,7 @@ import asyncHandler from "express-async-handler";
 import User from "../models/User.js";
 
 //------ Registrstion -----//
-const register = asyncHandler(async (req, res) => {
+export const register = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
@@ -51,7 +51,7 @@ const register = asyncHandler(async (req, res) => {
 
 
 //------ Login -----//
-const login = asyncHandler(async (req, res) => {
+export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
@@ -76,10 +76,11 @@ const login = asyncHandler(async (req, res) => {
   // Set cookie
   res.cookie("token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "None",
-    maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
+    secure: process.env.NODE_ENV === "production" ? true : false,
+    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+    maxAge: 3 * 24 * 60 * 60 * 1000,
   });
+  
 
   res.status(200).json({
     status: "success",
@@ -91,7 +92,7 @@ const login = asyncHandler(async (req, res) => {
 });
 
 //------ Logout -----//
-const logout = asyncHandler(async (req, res) => {
+export const logout = asyncHandler(async (req, res) => {
   res.cookie("token", "", {
     httpOnly: true,
     expires: new Date(0),
@@ -102,7 +103,7 @@ const logout = asyncHandler(async (req, res) => {
 
 
 //------ Profile -----//
-const userProfile = asyncHandler(async (req, res) => {
+export const userProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id)
     .select("-password")
     .populate("payments")
@@ -121,7 +122,7 @@ const userProfile = asyncHandler(async (req, res) => {
 
 
 //------ Check user Auth Status -----//
-const checkAuth = asyncHandler(async (req, res) => {
+export const checkAuth = asyncHandler(async (req, res) => {
   try {
     const token = req.cookies.token;
     if (!token) {
