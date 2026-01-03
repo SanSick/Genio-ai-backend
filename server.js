@@ -12,7 +12,7 @@ import stripeRouter from "./routes/stripeRouter.js";
 import { errorHandler } from "./middlewares/errorMiddleware.js";
 import connectDB from "./utils/connectDB.js";
 
-dotenv.config();
+// dotenv.config();
 connectDB();
 
 const app = express();
@@ -121,11 +121,16 @@ cron.schedule("0 0 1 * * ", async () => {
 });
 
 //-----middlewares-----//
+app.set("trust proxy", 1);
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
+  // origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
+  origin:
+    process.env.NODE_ENV === "production"
+      ? process.env.FRONTEND_URL
+      : "http://localhost:5173",
   credentials: true,
 };
-app.set("trust proxy", 1);
+
 app.use(cors(corsOptions));
 app.use(express.json());//^pass incoming json data
 app.use(express.urlencoded({ extended: true }));
